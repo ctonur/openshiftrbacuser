@@ -134,3 +134,109 @@ oc whoami  # Giriş yapan kullanıcıyı gösterir
 oc projects  # Kullanıcının erişebildiği namespace'leri listeler
 oc get pods -n ns1  # Kullanıcının eriştiği namespace’de podları listeler
 ```
+
+# OpenShift `oc` Komutları ile Kullanıcı ve Yetki Yönetimi
+
+Bu belge, OpenShift ortamında kullanıcıları, rolleri ve yetkilendirmeleri yönetmek için kullanılan `oc` komutlarını açıklar.
+
+---
+
+## **📌 1. Kullanıcıları ve Rolleri Listeleme**
+
+### **Mevcut Kullanıcıları Görüntüleme**
+```bash
+# OpenShift’te tanımlı kullanıcıları listele
+oc get users
+
+# Kullanıcıların kimlik bilgilerini listele
+oc get identities
+
+# Belirli bir kullanıcının detaylarını görmek için
+oc get user <KULLANICI_ADI> -o yaml
+```
+
+### **Mevcut Rolleri Görüntüleme**
+```bash
+# Tüm rollerin listesini görmek için
+oc get roles --all-namespaces
+
+# Belirli bir namespace içindeki rolleri listeleme
+oc get roles -n <NAMESPACE>
+
+# Cluster-wide (küresel) rollerin listesini görmek için
+oc get clusterroles
+```
+
+---
+
+## **📌 2. ClusterRole ve RoleBinding’leri Görüntüleme**
+
+### **Mevcut ClusterRole’leri Listeleme**
+```bash
+# Tüm ClusterRole’leri görmek için
+oc get clusterroles
+
+# Bir ClusterRole'in detaylarını görmek için
+oc describe clusterrole <CLUSTER_ROLE_ADI>
+```
+
+### **RoleBinding’leri Listeleme**
+```bash
+# Bir namespace içindeki RoleBinding’leri listele
+oc get rolebindings -n <NAMESPACE>
+
+# RoleBinding detaylarını görmek için
+oc describe rolebinding <ROLEBINDING_ADI> -n <NAMESPACE>
+
+# Tüm cluster genelindeki RoleBinding’leri görmek için
+oc get clusterrolebindings
+```
+
+---
+
+## **📌 3. OpenShift’te Geçici Kullanıcı Girişi (Token ile)**
+
+### **Token ile Geçici Giriş Yapma**
+```bash
+oc login --token=<TOKEN> --server=<API_SERVER>
+```
+
+### **Token’i Alma**
+```bash
+oc whoami -t
+```
+Bu yöntemle cluster’a giriş yaparsın, ancak terminali kapattığında veya oturumu değiştirdiğinde yetki kaybolur.
+
+---
+
+## **📌 4. Kullanıcıları Zorla Oturumu Kapatma (`oc adm prune auth`)**
+
+### **Tüm Kullanıcıları Zorla Oturumu Kapatma**
+```bash
+oc adm prune auth
+```
+
+### **Bu Komut Ne Yapar?**
+- Kullanıcıların mevcut kimlik doğrulama bilgilerini temizler.
+- Kullanıcıları sistemden çıkış yaptırır.
+- Önbelleğe alınmış eski yetkileri temizler.
+- OpenShift API’ye tekrar giriş yapmalarını gerektirir.
+
+### **Belirli Bir Kullanıcıyı Sistemden Çıkarma**
+```bash
+oc delete user <KULLANICI_ADI>
+oc delete identity htpasswd_provider:<KULLANICI_ADI>
+```
+
+---
+
+## **📌 5. Test ve Kontroller**
+Aşağıdaki komutlar ile yetkilendirmeleri test edebilirsiniz:
+
+```bash
+oc whoami  # Giriş yapan kullanıcıyı gösterir
+oc projects  # Kullanıcının erişebildiği namespace'leri listeler
+oc get pods -n <NAMESPACE>  # Kullanıcının eriştiği namespace’de podları listeler
+```
+
+
