@@ -146,13 +146,8 @@ Bu belge, OpenShift ortamında kullanıcıları, rolleri ve yetkilendirmeleri y�
 ### **Mevcut Kullanıcıları Görüntüleme**
 ```bash
 # OpenShift’te tanımlı kullanıcıları listele
-oc get users
+oc get secret htpasswd-secret -n openshift-config -o jsonpath="{.data.htpasswd}" | base64 -d
 
-# Kullanıcıların kimlik bilgilerini listele
-oc get identities
-
-# Belirli bir kullanıcının detaylarını görmek için
-oc get user <KULLANICI_ADI> -o yaml
 ```
 
 ### **Mevcut Rolleri Görüntüleme**
